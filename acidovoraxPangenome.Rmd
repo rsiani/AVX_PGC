@@ -68,7 +68,7 @@ my_comparison = list(c("commensal", "free-living"),
 
 ## load results from L.japonicus bioassays
 
-IN = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+IN = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                 sheet = "growth_assay",
                 sep.names = " ") %>%
   select(c(bacteria, 
@@ -434,7 +434,7 @@ colnames(tDF) = DF_WIDE$bacteria
 
 ## load summarized results from the tests
 
-effects = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+effects = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                 sheet = "growth_effects",
                 sep.names = " ") %>% 
   select(bacteria, effect)
@@ -453,28 +453,13 @@ tDF = tDF %>%
 
 rownames(tDF) = tDF$bacteria
 
-copy = tDF[, 1:10] %>%
-  pivot_longer(cols = 2:10,
-               names_to = "Metric",
-               values_to = "changeRatio") %>%
-  group_by(bacteria) %>%
-  summarise(mean(changeRatio))
-
 ## plot heatmap
 
 superheat(tDF[, 2:10],
           scale = F,
-          yr = copy$`mean(changeRatio)`,
-          yr.axis.name = "Average Change",
-          yr.plot.size = 0.2,
-          yr.axis.name.size = 15,
-          yr.plot.type = "scatter",
-          yr.axis.size = 15,
-          yr.point.alpha = 0.8,
           legend.text.size = 15,
           smooth.heat = T,
-          heat.pal = c("#264653","#2a9d8f","#e9c46a","#f4a261","#e76f51"),
-          yr.cluster.col = c("#264653","#2a9d8f","#e9c46a","#f4a261","#e76f51"),
+          heat.pal = get_palette("npg", 3),
           membership.rows = tDF$effect,
           left.label.text.alignment = "left",
           left.label.col = "white",
@@ -484,8 +469,9 @@ superheat(tDF[, 2:10],
           padding = 0.1,
           legend = T,
           left.label = "variable",
-          bottom.label.size = 0.01,
+          bottom.label.size = 0.05,
           legend.width = 3,
+          bottom.label.text.size = 6,
           left.label.size = 0.05)
 
 rm(DF_WIDE,
@@ -499,7 +485,7 @@ rm(DF_WIDE,
 
 ## load panMatrix for L.japonicus isolates only
 
-IN = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx", 
+IN = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx", 
                 sheet = "panMatrix_LJR",
                 colNames = T,
                 rowNames = T) %>% 
@@ -523,7 +509,7 @@ write.table(DF,
 
 ## load summirized results
 
-res.lda = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx", 
+res.lda = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx", 
                 sheet = "res.lefse",
                 colNames = T,
                 rowNames = F,
@@ -558,13 +544,13 @@ ggbarplot(res.lda,
 
 ## load pyANI results for the strains
 
-ANI = readxl::read_xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+ANI = readxl::read_xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                             sheet = "ANI") %>%
   column_to_rownames("key")
 
 ## load metadata for the plotting
 
-classes = readxl::read_xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+classes = readxl::read_xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                             sheet  = "metadata")
 
 ## hierarchical clustering (default distance, euclidean)
@@ -586,7 +572,7 @@ a = ggtree(res_hc,
 
 ## loading pangenome structure
 
-pangenome_info = readxl::read_xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+pangenome_info = readxl::read_xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                                    sheet = "splits") %>%
   select(c(Bin, Clusters)) %>%
   mutate(Bin = fct_relevel(Bin,
@@ -642,7 +628,7 @@ c +
 
 ## load summarized info for the genomes
 
-DF0 = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+DF0 = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                 sheet = "summary",
                 rowNames = F,
                 colNames = T,
@@ -746,7 +732,7 @@ rm(DF0,
 
 ## source data as a table, transpose and convert in binary matrix (presence/absence)
 
-TAB = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx", 
+TAB = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx", 
                 sheet = "panMatrix",
                 colNames = T,
                 rowNames = T,
@@ -845,7 +831,7 @@ B = ind %>%
              shape = phenotype)) +
   geom_point(size = 3,
              alpha = 0.8) +
-  ?stat_ellipse(linetype = 0,
+  stat_ellipse(linetype = 0,
                geom = "polygon",
                type = "norm",
                alpha = 0.25,
@@ -881,17 +867,19 @@ C = ggbarplot(cntrb,
               y = "Contribution",
               fill = "Dimension",
               position = position_dodge(),
-              width = 0.90,
-              alpha = 0.66,
-              rotate = T,
-              palette = get_palette(c("#264653","#e9c46a","#e76f51"),3)) +
+              width = 0.9,
+              alpha = 0.8,
+              palette = "Blues") +
   theme_ipsum(plot_margin = margin(0, 0, 0, 0),
               base_size = 12.5,
               axis_title_size = 15) +
-  theme(axis.title.y = element_blank())
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 45,
+                                   vjust = 1,
+                                   hjust = 1))
 
-((A / B) | C) +
-  plot_layout(widths = c(2, 1)) +
+(A | B) / C +
+  plot_layout(heights = c(2, 1)) +
   plot_annotation(tag_levels = "a",
                   theme = theme_ipsum(plot_margin = margin(0, 0, 0, 0)))
   
@@ -913,7 +901,7 @@ rm(cntrb,
 
 ## load enriched functions data
 
-DF3 = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+DF3 = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                 sheet = "enrichedFunctions",
                 sep.names = " ") %>% 
   filter(!associated_groups %in% "free-living",
@@ -930,7 +918,7 @@ DF3$log2fold[DF3$associated_groups %in% "commensal"] = 0 - DF3$log2fold[DF3$asso
 
 ## load enriched functions of interest data
 
-DF4 = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx",
+DF4 = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
                 sheet = "curatedList") %>% 
   mutate(log2fold = log2(enrichment_score))
 
@@ -973,23 +961,24 @@ B = ggdotchart(DF4,
                color = "Family",
                sorting = "asc",
                palette = get_palette("npg", 4),
-               rotate = T,
                dot.size = 2.5,
                y.text.col = T,
-               ggtheme = theme_ipsum(grid = "Y",
+               ggtheme = theme_ipsum(grid = "X",
                                         plot_margin = margin(0, 0, 0, 0),
                                         base_size = 15,
                                         axis_title_size = 15),
                font.tickslab = c(12),
                ticks = F,
                ylab = "Enrichment Score") +
-  theme(axis.title.y = element_blank(),
-        legend.position = "bottom")
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 80,
+                                   hjust = 1,
+                                   vjust = 1))
 
 ## combined graph
 
-(A | B) +
-  plot_layout(widths = c(1)) +
+(A / B) +
+  plot_layout(heights = c(1.5, 1)) +
   plot_annotation(tag_levels = "a",
                   theme = theme_ipsum(plot_margin = margin(0, 1, 0, 0)))
 
@@ -1008,7 +997,7 @@ rm(DF3,
 
 ## import antiSMASH results
 
-DF2 = read.xlsx("~/Desktop/AvxPGC/IN/res_AVX.xlsx", 
+DF2 = read.xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx", 
                         sheet = "antiSMASH",
                 sep.names = " ") %>% 
   merge(phenotype, by = "ID") %>% 
@@ -1040,19 +1029,19 @@ ggbarplot(DF2,
           position = position_dodge2(),
           palette = my_palette,
           label = T,
+          lab.size = 5,
           ylab = "% of genomes",
           width = 0.8,
-          alpha = 0.75,
+          alpha = 0.8,
           ggtheme = theme_ipsum(grid = F,
                                    plot_margin = margin(0, 0, 0, 0),
                                    axis_title_size = 15,
                                    base_size = 15)) +
   theme(axis.text.y = element_blank(),
         axis.title.x = element_blank(),
-        axis.text.x = element_text(angle = 15,
-                                   hjust = 0.5,
-                                   vjust = 0.95),
-        legend.position = "top" ) +
+        legend.position = "top",
+        axis.text.x = element_text(angle = 10,
+                                   vjust = 1.75)) +
   plot_layout()
 
 ## clean environment
