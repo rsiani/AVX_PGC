@@ -530,9 +530,9 @@ ggbarplot(res.lda,
           ylab = "Logarithmic LDA score",
           lab.col = "associated_group") +
   theme_ipsum(grid = "XY",
-              plot_margin = margin(0, 0, 1, 1),
-              base_size = 15,
-              axis_title_size = 15) +
+              plot_margin = margin(1, 1, 1, 1),
+              base_size = 20,
+              axis_title_size = 20) +
   theme(axis.title.y = element_blank()) +
   coord_flip()
 
@@ -555,7 +555,7 @@ classes = readxl::read_xlsx("~/Desktop/AvxPGC/IN/SupplementalMaterial.xlsx",
 
 ## hierarchical clustering (default distance, euclidean)
 
-res_hc = hclust(?dist(matrice),
+res_hc = hclust(dist(ANI),
                 method = "ward.D2")
 
 ## plotting the tree
@@ -598,10 +598,10 @@ b = ggplot(pangenome_info,
             size = 9,
             alpha = 0.8) +
   scale_fill_manual(values = c("#264653","#2a9d8f","#e9c46a","#f4a261","#e76f51")) +
-  hrbrthemes::theme_ipsum(
+  theme_ipsum(
     plot_margin = margin(0, 0, 0, 0),
-    axis_text_size = 15,
-    axis_title_size = 15,
+    axis_text_size = 20,
+    axis_title_size = 20,
     grid = F) +
   xlab("N. of Gene Clusters") +
   theme(legend.position = "none",
@@ -647,9 +647,9 @@ A = ggdotchart(DF0,
                remove = "LjRoot141",
                x.text.col = T,
                ylab = "Logarithmic Genome Lenght",
-               ggtheme = theme_ipsum("X",
-                                     plot_margin = margin(0, 0, 0, 0),
-                                     axis_title_size = 15,
+               ggtheme = theme_ipsum(grid = "X",
+                                     plot_margin = margin(0, 0, 1, 1),
+                                     axis_title_size = 20,
                                      base_size = 15)) +
   theme(legend.position = "none",
         axis.title.x = element_blank())
@@ -665,9 +665,11 @@ B = ggboxplot(DF0,
                 order = c("free-living", "commensal", "pathogen"),
                 xlab = "",
                 ylab = "Logarithmic Genome Lenght",
-                ggtheme = theme_ipsum(plot_margin = margin(0, 0, 0, 0),
-                 axis_title_size = 15,
-                 base_size = 15)) +
+                ggtheme = theme_ipsum(
+                  grid = "Y",
+                  plot_margin = margin(0, 0, 0, 0),
+                 axis_title_size = 20,
+                 base_size = 20)) +
   stat_compare_means(comparisons = my_comparison,
                      label = "p.signif") +
   theme(legend.position = "none")
@@ -683,9 +685,11 @@ C = ggboxplot(DF0,
                 order = c("free-living", "commensal", "pathogen"),
                 xlab = "",
                 ylab = "Number of genes per kb",
-                ggtheme = theme_ipsum(plot_margin = margin(0, 0, 0, 0),
-                 axis_title_size = 15,
-                 base_size = 15)) +
+                ggtheme = theme_ipsum(
+                  grid = "Y",
+                  plot_margin = margin(0, 0, 0, 0),
+                 axis_title_size = 20,
+                 base_size = 20)) +
   stat_compare_means(comparisons = my_comparison,
                      label = "p.signif") +
   theme(legend.position = "none")
@@ -814,8 +818,8 @@ A = ind %>%
                alpha = 0.25,
                aes(fill = phenotype)) +
   theme_ipsum(plot_margin = margin(0, 0, 0, 0),
-                 base_size = 15,
-                 axis_title_size = 15) +
+                 base_size = 20,
+                 axis_title_size = 20) +
   scale_color_manual(values = my_palette) +
   scale_fill_manual(values = my_palette) +
   theme(legend.position = "none") +
@@ -837,13 +841,14 @@ B = ind %>%
                alpha = 0.25,
                aes(fill = phenotype)) +
   theme_ipsum(plot_margin = margin(0, 0, 0, 0),
-                 base_size = 15,
-                 axis_title_size = 15) +
+                 base_size = 20,
+                 axis_title_size = 20) +
   scale_color_manual(values = my_palette) +
   scale_fill_manual(values = my_palette) +
   labs(x = "Dim.1 (24.3%)",
        y = "Dim.3 (10.3%)") +
-  theme(legend.position = "none")
+  theme(legend.title = element_blank(),
+        legend.text = element_text(size = 20))
 
 ## get contributions for the variables
 
@@ -871,12 +876,14 @@ C = ggbarplot(cntrb,
               alpha = 0.8,
               palette = "Blues") +
   theme_ipsum(plot_margin = margin(0, 0, 0, 0),
-              base_size = 12.5,
-              axis_title_size = 15) +
+              base_size = 15,
+              axis_title_size = 20) +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 45,
                                    vjust = 1,
-                                   hjust = 1))
+                                   hjust = 1),
+        legend.text = element_text(size = 20),
+        legend.title = element_blank())
 
 (A | B) / C +
   plot_layout(heights = c(2, 1)) +
@@ -947,7 +954,7 @@ A = EnhancedVolcano(DF3,
   labs(y = bquote(~-Log[10]~ "q-value")) +
   theme_ipsum(grid = "XY",
                  plot_margin = margin(0, 0, 0, 0),
-                 axis_title_size = 15) +
+                 axis_title_size = 20) +
   theme(legend.position = "none",
         plot.title = element_blank(),
         plot.subtitle = element_blank(),
@@ -965,20 +972,21 @@ B = ggdotchart(DF4,
                y.text.col = T,
                ggtheme = theme_ipsum(grid = "X",
                                         plot_margin = margin(0, 0, 0, 0),
-                                        base_size = 15,
-                                        axis_title_size = 15),
+                                        base_size = 20,
+                                        axis_title_size = 20),
                font.tickslab = c(12),
                ticks = F,
                ylab = "Enrichment Score") +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 80,
                                    hjust = 1,
-                                   vjust = 1))
+                                   vjust = 1),
+        legend.title = element_blank())
 
 ## combined graph
 
 (A / B) +
-  plot_layout(heights = c(1.5, 1)) +
+  plot_layout(heights = c(2, 1)) +
   plot_annotation(tag_levels = "a",
                   theme = theme_ipsum(plot_margin = margin(0, 1, 0, 0)))
 
@@ -1029,19 +1037,20 @@ ggbarplot(DF2,
           position = position_dodge2(),
           palette = my_palette,
           label = T,
-          lab.size = 5,
+          lab.size = 6,
           ylab = "% of genomes",
           width = 0.8,
           alpha = 0.8,
           ggtheme = theme_ipsum(grid = F,
                                    plot_margin = margin(0, 0, 0, 0),
-                                   axis_title_size = 15,
-                                   base_size = 15)) +
+                                   axis_title_size = 20,
+                                   base_size = 20)) +
   theme(axis.text.y = element_blank(),
         axis.title.x = element_blank(),
         legend.position = "top",
+        legend.title = element_blank(),
         axis.text.x = element_text(angle = 10,
-                                   vjust = 1.75)) +
+                                   vjust = 1.65)) +
   plot_layout()
 
 ## clean environment
@@ -1089,13 +1098,13 @@ registerDoParallel(cl)
 
 set.seed(1)
 
-seeds <- vector(mode = "list", length = 1000)
+seeds <- vector(mode = "list", length = 100)
 
-for (i in 1:1000) seeds[[i]] <- sample.int(1000, 39)
+for (i in 1:100) seeds[[i]] <- sample.int(100, 39)
 
 ## For the last model:
 
-seeds[[1001]] <- sample.int(1000, 1)
+seeds[[101]] <- sample.int(100, 1)
 
 ## train classifier on training partition
 
@@ -1104,19 +1113,18 @@ set.seed(1)
 model_NN = train(observation ~ .,
                  data = trDF,
                  method = "pcaNNet",
-                 trControl = trainControl(method = "LOOCV",
-                                          number = 1000,
+                 trControl = trainControl(method = "repeatedcv",
+                                          number = 10,
+                                          repeats = 10,
                                           seeds = seeds,
                                           classProbs = T,
                                           returnResamp = "final",
                                           summaryFunction = multiClassSummary,
                                           trim = F),
-                 tuneLenght = 15,
+                 tuneLenght = 10,
                  metric = "Accuracy")
 
-## The final values used for the model were sigma = 0.008374599 and C = 885.4354.
-
-## sigma = 0.0002142411 and C = 0.25
+## The final values used for the model were size = 5 and decay = 1
 
 model_NN
 
@@ -1130,20 +1138,6 @@ votes = predict(model_NN,
                 teDF)
 
 confusionMatrix(reference = teDF$observation,
-                data = votes,
-                mode = "everything",
-                positive = "pathogen")
-
-## re-test model on full collection
- 
-predicted = predict(model_NN, 
-                    MLDF,
-                    type = "prob")
-
-votes = predict(model_NN,
-                MLDF)
-
-confusionMatrix(reference = MLDF$observation,
                 data = votes,
                 mode = "everything",
                 positive = "pathogen")
